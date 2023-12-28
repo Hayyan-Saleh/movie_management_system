@@ -21,7 +21,7 @@ public class UserMainPanel extends JPanel implements ActionListener {
     Data data;
     User user;
     JLabel userNameLabel, userTotalTicketsLabel;
-    JButton addTicketButton,removeTicketButton,newMovieBookerButton, showStaticsButton;
+    JButton addTicketButton,removeTicketButton,newMovieBookerButton, showStaticsButton,rateMovieButton;
 
     DefaultTableModel moviesModel = new DefaultTableModel();
     JTable  moviesTable;
@@ -101,7 +101,7 @@ public class UserMainPanel extends JPanel implements ActionListener {
         add(newMovieBookerButton);
 
         showStaticsButton =new JButton("Show Statistics");
-        showStaticsButton.setBounds(450,270,200,30);
+        showStaticsButton.setBounds(350,270,195,30);
         showStaticsButton.setFont(font);
         showStaticsButton.setFocusPainted(false);
         showStaticsButton.setBorder(null);
@@ -109,6 +109,17 @@ public class UserMainPanel extends JPanel implements ActionListener {
         showStaticsButton.setBackground(new Color(50,50,50));
         showStaticsButton.addActionListener(this);
         add(showStaticsButton);
+
+        rateMovieButton = new JButton("Rate Movies");
+        rateMovieButton.setBounds(555, 270, 195, 30);
+        rateMovieButton.setFont(font);
+        rateMovieButton.setFocusPainted(false);
+        rateMovieButton.setBorder(null);
+        rateMovieButton.setForeground(Color.white);
+        rateMovieButton.setBackground(new Color(50, 50, 50));
+        rateMovieButton.addActionListener(this);
+        add(rateMovieButton);
+
 
         //creating movies Table and adding it to panel
         moviesModel.addColumn("Movie Name");
@@ -275,6 +286,24 @@ public class UserMainPanel extends JPanel implements ActionListener {
                 }
             }).start();
 
+        }else if(e.getSource()==rateMovieButton){
+            RateMoviesFrame rmf=new RateMoviesFrame(this.user,this.data);
+            userFrame.setEnabled(false);
+            new Thread(()->{
+                while(!Thread.currentThread().isInterrupted()){
+                    if(!rmf.isVisible()){
+                        try {
+                            ObjectOutputStream applicationDataSaver = new ObjectOutputStream(new FileOutputStream("data.txt"));
+                            applicationDataSaver.writeObject(data);
+
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(null, "There is an IOEXCEPTION \n" + ex.getMessage());
+                        }
+                        userFrame.setEnabled(true);
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }).start();
         }
     }
 }

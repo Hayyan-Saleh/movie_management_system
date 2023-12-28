@@ -1,7 +1,7 @@
 package Frames;
 
-import Domain.Cinema;
 import Domain.Hall;
+import Domain.Movie;
 import Files.Data;
 
 import javax.swing.*;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class ManagerFrame extends JFrame implements WindowListener, ActionListener {
     Data data;
     JPanel mainPanel, sidePanel;
-    JButton homeButton, addHallButton, addMovieButton, goBackToSignInWindowButton, aboutButton;
+    JButton homeButton, addHallButton, addMovieButton, removeAllMoviesRatingsButton,goBackToSignInWindowButton, aboutButton;
     Font font = new Font("Serif", Font.BOLD, 18);
 
     public ManagerFrame(Data data) {
@@ -70,6 +70,16 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
         addMovieButton.setPreferredSize(new Dimension(300, 40));
         addMovieButton.addActionListener(this);
         sidePanel.add(addMovieButton);
+
+        removeAllMoviesRatingsButton = new JButton("Remove All Movies Ratings");
+        removeAllMoviesRatingsButton.setFocusPainted(false);
+        removeAllMoviesRatingsButton.setBorderPainted(false);
+        removeAllMoviesRatingsButton.setFont(new Font("Serif", Font.BOLD, 18));
+        removeAllMoviesRatingsButton.setForeground(Color.white);
+        removeAllMoviesRatingsButton.setBackground(new Color(0, 180, 100));
+        removeAllMoviesRatingsButton.setPreferredSize(new Dimension(300, 40));
+        removeAllMoviesRatingsButton.addActionListener(this);
+        sidePanel.add(removeAllMoviesRatingsButton);
 
         goBackToSignInWindowButton = new JButton("Go Back To Sign in Window");
         goBackToSignInWindowButton.setFocusPainted(false);
@@ -179,6 +189,14 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
                     }
                 }).start();
 
+            }
+        } else if (e.getSource() == removeAllMoviesRatingsButton) {
+            int res =JOptionPane.showConfirmDialog(this,"Are you sure you want to DELETE All the Movies RATINGS ?");
+            if (res == JOptionPane.YES_OPTION) {
+                    for(Movie movie:data.getAppMovies()){
+                        movie.clearMovieRatings();
+                    }
+                    JOptionPane.showMessageDialog(this,"Successfully Removed All Ratings ");
             }
         } else if (e.getSource() == goBackToSignInWindowButton) {
             try {

@@ -1,6 +1,8 @@
 package Crew;
 
+
 import Domain.Ticket;
+import Files.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ public class User implements Serializable {
     private String userName;
     private String userPassword;
     private ArrayList<Ticket> userTickets;
+
 
     public User(String userName, String userPassword, ArrayList<Ticket> userTickets) {
         this.userName = userName;
@@ -46,5 +49,9 @@ public class User implements Serializable {
     }
     public void setUserTickets(ArrayList<Ticket> userTickets) {
         this.userTickets = userTickets;
+    }
+
+
+    public void addRating(Data.Rating rating) {
     }
 }

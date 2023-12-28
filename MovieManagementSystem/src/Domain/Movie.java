@@ -12,6 +12,7 @@ public class Movie implements Serializable {
     private Category movieCategory;
 
 
+    ArrayList<String>rating;
 
     Map<Day,ArrayList<Hour>> movieShowTimes;
     private Double price;
@@ -24,12 +25,22 @@ public class Movie implements Serializable {
         return movieHalls.get(dayIndex).get(hourIndex);
     }
 
+    public ArrayList<String> getMovieRating() {
+        return rating;
+    }
+    public void addMovieRating(String comment){
+        rating.add(comment);
+    }
+    public void clearMovieRatings(){
+        rating.clear();
+    }
 
     public Movie() {
         hourHallChairsMap = new LinkedHashMap<>();
         dayHourHallCharisMap = new HashMap<>();
         hourHallMap = new LinkedHashMap<>();
         movieHalls = new HashMap<>();
+        rating=new ArrayList<>();
         ID = GlobalID++;
     }
 
@@ -88,7 +99,7 @@ public class Movie implements Serializable {
         this.movieShowTimes=movieShowTimes;
         this.price = price;
         this.hourHallMap = new LinkedHashMap<>();
-
+        rating=new ArrayList<>();
     }
 
     public void setMovieChairAvailable(int dayIndex, int hourIndex, int chairIndex, boolean isTaken) {

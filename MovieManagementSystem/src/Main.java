@@ -1,10 +1,11 @@
 import Files.Data;
+import Frames.ManagerFrame;
 import Frames.SignInFrame;
-import Frames.StatisticsFrame;
 import Frames.UserFrame;
 
 import javax.swing.*;
 import java.io.*;
+import java.util.Map;
 
 public class Main {
     Data data;
@@ -30,6 +31,7 @@ public class Main {
 
     public static void main(String args[]) {
             new Main();
+
 
 //        Hall hall = new Hall("hall1", 30, null);
 //        ArrayList<Day> days1 = new ArrayList<>();

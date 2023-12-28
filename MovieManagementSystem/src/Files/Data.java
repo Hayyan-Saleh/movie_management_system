@@ -68,6 +68,42 @@ public class Data implements Serializable {
                System.out.println(hall.toString());
           }
      }
+     public void saveRating(String username, int rating, String comment) {
+          for (User user : appUsers) {
+               if (user.getUserName().equals(username)) {
+                    user.addRating(new Rating(rating, comment));
+                    break;
+               }
+          }
+     }
+
+
+
+     public class Rating {
+          private int rating;
+          private String comment;
+
+          public Rating(int rating, String comment) {
+               this.rating = rating;
+               this.comment = comment;
+          }
+
+          public int getRating() {
+               return rating;
+          }
+
+          public void setRating(int rating) {
+               this.rating = rating;
+          }
+
+          public String getComment() {
+               return comment;
+          }
+
+          public void setComment(String comment) {
+               this.comment = comment;
+          }
+     }
 
 
 
