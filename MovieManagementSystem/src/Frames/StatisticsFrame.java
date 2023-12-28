@@ -27,8 +27,9 @@ public class StatisticsFrame extends JFrame {
 
 
         setTitle("Statistics Frame");
-        setBounds((Toolkit.getDefaultToolkit().getScreenSize().getSize().width-400)/2,(Toolkit.getDefaultToolkit().getScreenSize().getSize().height-260)/2,400,260);
+        setBounds((Toolkit.getDefaultToolkit().getScreenSize().getSize().width-400)/2,(Toolkit.getDefaultToolkit().getScreenSize().getSize().height-270)/2,400,270);
         setLayout(new FlowLayout());
+        setResizable(false);
         getContentPane().setBackground(new Color(160, 0, 50));
 
 

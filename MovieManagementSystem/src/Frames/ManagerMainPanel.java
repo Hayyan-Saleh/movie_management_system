@@ -14,7 +14,7 @@ public class ManagerMainPanel extends JPanel {
     Data data;
     Font font = new Font("Serif", Font.BOLD, 18);
     JLabel cinemaNameLabel, managerNameLabel, timeLabel, statisticsHintLabel, moviesHintLabel, usersHintLabel;
-    JLabel totalMoviesLabel, totalHallsLabel, totalUsersLabel, totalTicketsLabel, totalIncomeLabel;
+    JLabel totalMoviesLabel, totalHallsLabel, totalUsersLabel, totalTicketsLabel, totalIncomeLabel,discountDetailsLabel;
     DefaultTableModel usersModel = new DefaultTableModel();
     DefaultTableModel moviesModel = new DefaultTableModel();
     JTable usersTable, moviesTable;
@@ -94,16 +94,18 @@ public class ManagerMainPanel extends JPanel {
         totalTicketsLabel.setFont(new Font("Serif", Font.BOLD, 18));
         totalTicketsLabel.setForeground(Color.white);
         add(totalTicketsLabel);
-        double totalIncome=0;
-        for(User user:data.getAppUsers())
-        for(Ticket ticket:user.getUserTickets()){
-            totalIncome+=ticket.getMovie().getPrice();
-        }
-        totalTicketsLabel = new JLabel(" Total Income : " + totalIncome+" $ ");
-        totalTicketsLabel.setBounds(650, 160, 345, 30);
-        totalTicketsLabel.setFont(new Font("Serif", Font.BOLD, 18));
-        totalTicketsLabel.setForeground(Color.white);
-        add(totalTicketsLabel);
+
+        totalIncomeLabel = new JLabel(" Total Income : " + data.getAppManager().getManagerIncome()+" $ ");
+        totalIncomeLabel.setBounds(650, 160, 345, 30);
+        totalIncomeLabel.setFont(new Font("Serif", Font.BOLD, 18));
+        totalIncomeLabel.setForeground(Color.white);
+        add(totalIncomeLabel);
+
+        discountDetailsLabel = new JLabel(data.getAppManager().getManagerDiscountDay()==null ? " Discount : No Discount" : " Discount : At "+data.getAppManager().getManagerDiscountDay()+" for "+data.getAppManager().getDiscountAmount()+" %");
+        discountDetailsLabel.setBounds(650, 200, 345, 30);
+        discountDetailsLabel.setFont(new Font("Serif", Font.BOLD, 18));
+        discountDetailsLabel.setForeground(Color.white);
+        add(discountDetailsLabel);
 
         //creating users table and adding it to panel
 
@@ -134,13 +136,13 @@ public class ManagerMainPanel extends JPanel {
 
         //creating movie table and adding it to panel
         moviesModel.addColumn("Movie Name");
-        moviesModel.addColumn("Category");
+        moviesModel.addColumn("Movie ID");
         moviesModel.addColumn("Price");
         String[] movieRow;
         if (data.getAppMovies() != null) {
             for (Movie movie :
                     data.getAppMovies()) {
-                movieRow = new String[]{movie.getMovieName(), movie.getMovieCategory().toString(), movie.getPrice().toString() + " $"};
+                movieRow = new String[]{movie.getMovieName(), movie.getID()+"", movie.getPrice().toString() + " $"};
                 moviesModel.addRow(movieRow);
             }
         }
@@ -173,7 +175,7 @@ public class ManagerMainPanel extends JPanel {
                 totalMoviesLabel.setText(data.getAppMovies() == null ? " Total Movies : 0" : " Total Movies : " + data.getAppMovies().size());
                 totalHallsLabel.setText(data.getCinema().getHalls() == null ? " Total Halls : 0" : " Total Halls : " + data.getCinema().getHalls().size());
                 totalUsersLabel.setText(data.getAppUsers() == null ? " Total Users : 0" : " Total Users : " + data.getAppUsers().size());
-//                refreshMoviesTable();
+                discountDetailsLabel.setText(data.getAppManager().getManagerDiscountDay()==null ? " Discount : No Discount" : " Discount : At "+data.getAppManager().getManagerDiscountDay()+" for "+data.getAppManager().getDiscountAmount()+" %");
             }
         }).start();
 

@@ -193,9 +193,15 @@ public class AddMovieFrame extends JFrame implements ActionListener {
                         dialogHall.setTimeTaken(day,hour);
                     }
                 }
+                if(data.getAppMovies()==null){
+                    data.setAppMovies(new ArrayList<>());
+                }else{
+                    if(!data.getAppMovies().isEmpty())
+                    Movie.setGlobalID(data.getAppMovies().get(data.getAppMovies().size()-1).getID()+1);
+                }
                 Movie movie=new Movie(frameMovieName,frameMovieCategory,frameMovieShowTimes,Double.parseDouble(frameMoviePrice));
                 dialogHall.getMovies().add(movie);
-                if(data.getAppMovies()==null){data.setAppMovies(new ArrayList<>());}
+
                 data.getAppMovies().add(movie);
                 for (Day day :
                         set) {

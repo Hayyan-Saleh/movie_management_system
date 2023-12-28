@@ -115,6 +115,7 @@ public class RemoveUserTicketFrame extends JFrame {
                 int response=JOptionPane.showConfirmDialog(this,"Are you sure you want to remove this \n"+currentTicketLabel.getText());
                 if(response==JOptionPane.YES_OPTION) {
                     Ticketing.removeTicket(this.user, this.removedTicket, this.removedTicket.getDay().ordinal(), this.removedTicket.getHour().ordinal());
+                    data.getAppManager().setManagerIncome(data.getAppManager().getManagerIncome()-this.removedTicket.getPrice());
                     JOptionPane.showMessageDialog(this, "Successfully removed selected Ticket from your tickets");
                     this.dispose();
                 } else {

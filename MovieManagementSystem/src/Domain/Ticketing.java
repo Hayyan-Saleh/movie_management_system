@@ -46,12 +46,12 @@ public class Ticketing implements Serializable {
         return movies;
     }
 
-    public static ArrayList<Ticket> addTicket(User user, Movie movie, Day day, Hour hour, ArrayList<Integer> chairsIndexes) {
+    public static ArrayList<Ticket> addTicket(User user, Movie movie, Day day, Hour hour, ArrayList<Integer> chairsIndexes,double price) {
         Hall hall = movie.getHallAt(day.ordinal(), hour.ordinal());
         ArrayList<Ticket> tickets = new ArrayList<>();
         Ticket ticket;
         for (int i = 0; i < chairsIndexes.size(); i++) {
-            ticket = new Ticket(chairsIndexes.get(i), movie,day,hour,hall);
+            ticket = new Ticket(chairsIndexes.get(i), movie,day,hour,hall,price);
             movie.getDayHourHallCharisMap().get(day.ordinal()).get(hour.ordinal()).set(chairsIndexes.get(i) - 1, true);
             tickets.add(ticket);
             user.getUserTickets().add(ticket);

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class ManagerFrame extends JFrame implements WindowListener, ActionListener {
     Data data;
     JPanel mainPanel, sidePanel;
-    JButton homeButton, addHallButton, addMovieButton, removeAllMoviesRatingsButton,goBackToSignInWindowButton, aboutButton;
+    JButton homeButton, addHallButton, addMovieButton, addDiscountButton,removeDiscountButton,removeAllMoviesRatingsButton,goBackToSignInWindowButton, aboutButton;
     Font font = new Font("Serif", Font.BOLD, 18);
 
     public ManagerFrame(Data data) {
@@ -66,17 +66,37 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
         addMovieButton.setBorderPainted(false);
         addMovieButton.setFont(font);
         addMovieButton.setForeground(Color.white);
-        addMovieButton.setBackground(new Color(0, 180, 100));
+        addMovieButton.setBackground(new Color(0, 180, 120));
         addMovieButton.setPreferredSize(new Dimension(300, 40));
         addMovieButton.addActionListener(this);
         sidePanel.add(addMovieButton);
+
+        addDiscountButton = new JButton("Add Discount");
+        addDiscountButton.setFocusPainted(false);
+        addDiscountButton.setBorderPainted(false);
+        addDiscountButton.setFont(new Font("Serif", Font.BOLD, 18));
+        addDiscountButton.setForeground(Color.white);
+        addDiscountButton.setBackground(new Color(0, 180, 140));
+        addDiscountButton.setPreferredSize(new Dimension(300, 40));
+        addDiscountButton.addActionListener(this);
+        sidePanel.add(addDiscountButton);
+
+        removeDiscountButton = new JButton("Remove Discount");
+        removeDiscountButton.setFocusPainted(false);
+        removeDiscountButton.setBorderPainted(false);
+        removeDiscountButton.setFont(new Font("Serif", Font.BOLD, 18));
+        removeDiscountButton.setForeground(Color.white);
+        removeDiscountButton.setBackground(new Color(0, 180, 160));
+        removeDiscountButton.setPreferredSize(new Dimension(300, 40));
+        removeDiscountButton.addActionListener(this);
+        sidePanel.add(removeDiscountButton);
 
         removeAllMoviesRatingsButton = new JButton("Remove All Movies Ratings");
         removeAllMoviesRatingsButton.setFocusPainted(false);
         removeAllMoviesRatingsButton.setBorderPainted(false);
         removeAllMoviesRatingsButton.setFont(new Font("Serif", Font.BOLD, 18));
         removeAllMoviesRatingsButton.setForeground(Color.white);
-        removeAllMoviesRatingsButton.setBackground(new Color(0, 180, 100));
+        removeAllMoviesRatingsButton.setBackground(new Color(0, 180, 180));
         removeAllMoviesRatingsButton.setPreferredSize(new Dimension(300, 40));
         removeAllMoviesRatingsButton.addActionListener(this);
         sidePanel.add(removeAllMoviesRatingsButton);
@@ -86,7 +106,7 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
         goBackToSignInWindowButton.setBorderPainted(false);
         goBackToSignInWindowButton.setFont(new Font("Serif", Font.BOLD, 16));
         goBackToSignInWindowButton.setForeground(Color.white);
-        goBackToSignInWindowButton.setBackground(new Color(0, 180, 100));
+        goBackToSignInWindowButton.setBackground(new Color(0, 180, 200));
         goBackToSignInWindowButton.setPreferredSize(new Dimension(300, 40));
         goBackToSignInWindowButton.addActionListener(this);
         sidePanel.add(goBackToSignInWindowButton);
@@ -96,7 +116,7 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
         aboutButton.setBorderPainted(false);
         aboutButton.setFont(font);
         aboutButton.setForeground(Color.white);
-        aboutButton.setBackground(new Color(0, 180, 100));
+        aboutButton.setBackground(new Color(0, 180, 220));
         aboutButton.setPreferredSize(new Dimension(300, 40));
         aboutButton.addActionListener(this);
         sidePanel.add(aboutButton);
@@ -190,6 +210,25 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
                 }).start();
 
             }
+        } else if (e.getSource() == addDiscountButton) {
+            AddDiscountFrame adf = new AddDiscountFrame(data);
+            this.setEnabled(false);
+            new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    if (!adf.isVisible()) {
+                        this.setEnabled(true);
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }).start();
+
+        } else if (e.getSource() == removeDiscountButton) {
+            int result =JOptionPane.showConfirmDialog(this,"Are you sure you want to Remove the Discount ?");
+            if (result == JOptionPane.YES_OPTION) {
+                data.getAppManager().setDiscountAmount(0);
+                data.getAppManager().setManagerDiscountDay(null);
+                JOptionPane.showMessageDialog(this,"Successfully Removed the Discount ! ");
+            }
         } else if (e.getSource() == removeAllMoviesRatingsButton) {
             int res =JOptionPane.showConfirmDialog(this,"Are you sure you want to DELETE All the Movies RATINGS ?");
             if (res == JOptionPane.YES_OPTION) {
@@ -198,7 +237,7 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
                     }
                     JOptionPane.showMessageDialog(this,"Successfully Removed All Ratings ");
             }
-        } else if (e.getSource() == goBackToSignInWindowButton) {
+        }else if (e.getSource() == goBackToSignInWindowButton) {
             try {
                 ObjectOutputStream applicationDataSaver = new ObjectOutputStream(new FileOutputStream("data.txt"));
                 applicationDataSaver.writeObject(data);

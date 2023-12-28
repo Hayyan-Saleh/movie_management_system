@@ -20,7 +20,7 @@ public class UserMainPanel extends JPanel implements ActionListener {
     UserFrame userFrame;
     Data data;
     User user;
-    JLabel userNameLabel, userTotalTicketsLabel;
+    JLabel userNameLabel, userTotalTicketsLabel,discountDetailsLabel;
     JButton addTicketButton,removeTicketButton,newMovieBookerButton, showStaticsButton,rateMovieButton;
 
     DefaultTableModel moviesModel = new DefaultTableModel();
@@ -45,19 +45,25 @@ public class UserMainPanel extends JPanel implements ActionListener {
 
         //creating the labels and adding them to panel
         userNameLabel =new JLabel("User Name : "+user.getUserName());
-        userNameLabel.setBounds(30,20,250,40);
+        userNameLabel.setBounds(10,20,250,40);
         userNameLabel.setFont(font);
         userNameLabel.setForeground(Color.white);
         add(userNameLabel);
 
         userTotalTicketsLabel =new JLabel("User Total Tickets : "+user.getUserTickets().size());
-        userTotalTicketsLabel.setBounds(30,60,250,40);
+        userTotalTicketsLabel.setBounds(10,60,250,40);
         userTotalTicketsLabel.setFont(font);
         userTotalTicketsLabel.setForeground(Color.white);
         add(userTotalTicketsLabel);
 
+        discountDetailsLabel =new JLabel(data.getAppManager().getManagerDiscountDay()==null ? "Discount :No Day Discounts":"Discount :At "+data.getAppManager().getManagerDiscountDay()+" for "+data.getAppManager().getDiscountAmount()+" %");
+        discountDetailsLabel.setBounds(10,100,365,40);
+        discountDetailsLabel.setFont(new Font("Arial",Font.PLAIN,20));
+        discountDetailsLabel.setForeground(Color.white);
+        add(discountDetailsLabel);
+
         JLabel newMovieHintLabel=new JLabel("Watch Newest Movie ");
-        newMovieHintLabel.setBounds(35,230,300,30);
+        newMovieHintLabel.setBounds(55,230,300,30);
         newMovieHintLabel.setFont(new Font("Arial",Font.LAYOUT_LEFT_TO_RIGHT,20));
         newMovieHintLabel.setForeground(Color.white);
         add(newMovieHintLabel);
@@ -70,7 +76,7 @@ public class UserMainPanel extends JPanel implements ActionListener {
 
         //creating and adding the buttons to the panel
         addTicketButton =new JButton("Add Ticket");
-        addTicketButton.setBounds(30,130,200,30);
+        addTicketButton.setBounds(50,150,200,30);
         addTicketButton.setFont(font);
         addTicketButton.setFocusPainted(false);
         addTicketButton.setBorder(null);
@@ -80,7 +86,7 @@ public class UserMainPanel extends JPanel implements ActionListener {
         add(addTicketButton);
 
         removeTicketButton =new JButton("Remove Ticket");
-        removeTicketButton.setBounds(30,170,200,30);
+        removeTicketButton.setBounds(50,190,200,30);
         removeTicketButton.setFont(font);
         removeTicketButton.setFocusPainted(false);
         removeTicketButton.setBorder(null);
@@ -91,7 +97,7 @@ public class UserMainPanel extends JPanel implements ActionListener {
 
 
         newMovieBookerButton =new JButton(data.getAppMovies().get(data.getAppMovies().size()-1).getMovieName());
-        newMovieBookerButton.setBounds(30,270,200,30);
+        newMovieBookerButton.setBounds(50,270,200,30);
         newMovieBookerButton.setFont(new Font("Serif",Font.LAYOUT_LEFT_TO_RIGHT,20));
         newMovieBookerButton.setFocusPainted(false);
         newMovieBookerButton.setBorder(null);

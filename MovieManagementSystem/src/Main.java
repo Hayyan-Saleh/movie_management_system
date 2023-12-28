@@ -1,3 +1,4 @@
+import Crew.Manager;
 import Files.Data;
 import Frames.ManagerFrame;
 import Frames.SignInFrame;
@@ -5,6 +6,7 @@ import Frames.UserFrame;
 
 import javax.swing.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Main {

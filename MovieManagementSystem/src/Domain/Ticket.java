@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Ticket implements Serializable {
     private int chairNumber;
+    private double price;
     private Movie movie;
     private Day day;
     private Hour hour;
@@ -25,12 +26,21 @@ public class Ticket implements Serializable {
         this.hour = hour;
     }
 
-    public Ticket(int chairNumber, Movie movie, Day day, Hour hour, Hall hall) {
+    public Ticket(int chairNumber, Movie movie, Day day, Hour hour, Hall hall,double price) {
         this.chairNumber = chairNumber;
         this.movie = movie;
         this.day = day;
         this.hour = hour;
         this.hall = hall;
+        this.price=price;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public int getChairNumber() {
