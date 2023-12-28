@@ -7,14 +7,14 @@ import Crew.*;
 import Files.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class MovieTicketingSecondFrame extends JFrame implements ActionListener {
     Data data;
@@ -71,7 +71,10 @@ public class MovieTicketingSecondFrame extends JFrame implements ActionListener 
 
     }
 
-
+    Icon availableIcon = new ImageIcon("SmallTrGreenSeat.png");
+    Icon hoverIcon = new ImageIcon("SmallTrYellowSeat.png");
+    Icon unAvailableIcon = new ImageIcon("smallTrRedSeat.png");
+    Map<JButton,Integer> c = new HashMap<>();
     public void createPanel() {
 
         chairsPanel = new JPanel();
@@ -80,35 +83,33 @@ public class MovieTicketingSecondFrame extends JFrame implements ActionListener 
         JButton tempButton;
         totalChairsBooleanArr = movie.getAvailableChairs(day.ordinal(), hour.ordinal());
         totalChairsButtonArr = new ArrayList<>(totalChairsBooleanArr.size());
+
         for (int i = 0; i < totalChairsBooleanArr.size(); i++) {
-            tempButton = new JButton(i + 1 + "");
+            tempButton = new JButton();
             tempButton.setPreferredSize(new Dimension(50, 50));
-            tempButton.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
-            tempButton.setFont(new Font("Serif", Font.BOLD, 22));
-            tempButton.setForeground(Color.white);
+            tempButton.setBorder(null);
+            tempButton.setContentAreaFilled(false);
+            c.put(tempButton,i);
+
             tempButton.setFocusPainted(false);
             tempButton.addActionListener(this);
             if (totalChairsBooleanArr.get(i)) {
-                tempButton.setBackground(Color.red);
-                tempButton.setEnabled(false);
+                tempButton.setIcon(unAvailableIcon);
             } else {
-                tempButton.setBackground(Color.green);
-                tempButton.setEnabled(true);
+                tempButton.setIcon(availableIcon);
             }
             totalChairsButtonArr.add(tempButton);
             chairsPanel.add(tempButton);
         }
-
-
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookButton) {
-            takenChairsIndexes = new ArrayList<>();
-            for (JButton button : totalChairsButtonArr) {
-                if (button.getBackground() == Color.orange) {
-                    takenChairsIndexes.add(Integer.valueOf(button.getText()));
+
+            takenChairsIndexes=new ArrayList<>();
+            for(JButton button:totalChairsButtonArr){
+                if(button.getIcon()==hoverIcon){
+                    takenChairsIndexes.add(c.get(button)+1);
                 }
             }
             if (takenChairsIndexes.size() != 0) {
@@ -127,22 +128,19 @@ public class MovieTicketingSecondFrame extends JFrame implements ActionListener 
                 JOptionPane.showMessageDialog(this, "Please pick a seat(s) in order to get ticket(s) ");
             }
 
-        } else {
-            for (JButton button : totalChairsButtonArr) {
-                if (e.getSource() == button) {
-                    if (!totalChairsBooleanArr.get(Integer.valueOf(button.getText() + "") - 1)) {
-                        if (button.getBackground().equals(Color.green)) {
-                            button.setBackground(Color.orange);
-                        } else {
-                            button.setBackground(Color.green);
-                        }
-                    }
-                    break;
+        }else{
+            for(JButton button :totalChairsButtonArr){
+                if(e.getSource()==button){
+                if(button.getIcon()==availableIcon){
+                    button.setIcon(hoverIcon);
+                }else if(button.getIcon()==hoverIcon){
+                    button.setIcon(availableIcon);
                 }
-
+                }
             }
         }
     }
+
 
 
 }

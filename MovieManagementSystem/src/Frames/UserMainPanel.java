@@ -8,9 +8,10 @@ import Files.Data;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -20,7 +21,7 @@ public class UserMainPanel extends JPanel implements ActionListener {
     Data data;
     User user;
     JLabel userNameLabel, userTotalTicketsLabel;
-    JButton addTicketButton,removeTicketButton,newMovieBookerButton;
+    JButton addTicketButton,removeTicketButton,newMovieBookerButton, showStaticsButton;
 
     DefaultTableModel moviesModel = new DefaultTableModel();
     JTable  moviesTable;
@@ -99,6 +100,16 @@ public class UserMainPanel extends JPanel implements ActionListener {
         newMovieBookerButton.addActionListener(this);
         add(newMovieBookerButton);
 
+        showStaticsButton =new JButton("Show Statistics");
+        showStaticsButton.setBounds(450,270,200,30);
+        showStaticsButton.setFont(font);
+        showStaticsButton.setFocusPainted(false);
+        showStaticsButton.setBorder(null);
+        showStaticsButton.setForeground(Color.white);
+        showStaticsButton.setBackground(new Color(50,50,50));
+        showStaticsButton.addActionListener(this);
+        add(showStaticsButton);
+
         //creating movies Table and adding it to panel
         moviesModel.addColumn("Movie Name");
         moviesModel.addColumn("Category");
@@ -115,13 +126,71 @@ public class UserMainPanel extends JPanel implements ActionListener {
         moviesTable.setFont(new Font("Arial",Font.PLAIN,18));
         moviesTable.setForeground(Color.white);
         moviesTable.setBackground(new Color(150,50,50));
-        moviesTable.setEnabled(false);
+        moviesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        moviesTable.setDefaultEditor(Object.class,null);
+        moviesTable.addMouseListener(
+                new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        Movie buttonMovie=null;
+                        String movieName=(String)moviesModel.getValueAt(moviesTable.getSelectedRow(),0);
+                        for(Movie movie:data.getAppMovies()){
+                            if(movie.getMovieName().equals(movieName)){
+                                buttonMovie=movie;
+                            }
+                        }
+                        Day day=null;
+                        for(Day day1:buttonMovie.getMovieShowTimes().keySet()){
+                            day=day1;
+                            break;
+                        }
+                        MovieTicketingSecondFrame mtsf=new MovieTicketingSecondFrame(data,user,buttonMovie,day,buttonMovie.getMovieHours(day).get(0));
+                        userFrame.setEnabled(false);
+                        new Thread(()->{
+                            while(!Thread.currentThread().isInterrupted()){
+                                if(!mtsf.isVisible()){
+                                    try {
+                                        ObjectOutputStream applicationDataSaver = new ObjectOutputStream(new FileOutputStream("data.txt"));
+                                        applicationDataSaver.writeObject(data);
+
+                                    } catch (IOException ex) {
+                                        JOptionPane.showMessageDialog(null, "There is an IOEXCEPTION \n" + ex.getMessage());
+                                    }
+                                    userFrame.setEnabled(true);
+                                    Thread.currentThread().interrupt();
+                                }
+                            }
+                        }).start();
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+
+                    }
+                }
+        );
         moviesTableScrollPane = new JScrollPane(moviesTable);
         moviesTableScrollPane.setBounds(350, 60, 400, 200);
         add(moviesTableScrollPane);
 
         //creating refresherThread to refresh labels data
         new Thread(()->{
+            while(!Thread.currentThread().isInterrupted())
             userTotalTicketsLabel.setText("User Total Tickets : "+user.getUserTickets().size());
         }).start();
 
@@ -187,6 +256,25 @@ public class UserMainPanel extends JPanel implements ActionListener {
                     }
                 }
             }).start();
+        } else if (e.getSource()==showStaticsButton) {
+            StatisticsFrame scs=new StatisticsFrame(this.data);
+            userFrame.setEnabled(false);
+            new Thread(()->{
+                while(!Thread.currentThread().isInterrupted()){
+                    if(!scs.isVisible()){
+                        try {
+                            ObjectOutputStream applicationDataSaver = new ObjectOutputStream(new FileOutputStream("data.txt"));
+                            applicationDataSaver.writeObject(data);
+
+                        } catch (IOException ex) {
+                            JOptionPane.showMessageDialog(null, "There is an IOEXCEPTION \n" + ex.getMessage());
+                        }
+                        userFrame.setEnabled(true);
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }).start();
+
         }
     }
 }

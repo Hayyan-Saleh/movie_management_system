@@ -1,5 +1,6 @@
 import Files.Data;
 import Frames.SignInFrame;
+import Frames.StatisticsFrame;
 import Frames.UserFrame;
 
 import javax.swing.*;
@@ -23,7 +24,6 @@ public class Main {
         } catch (ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null, "There is a CLASS NOT FOUND EXCEPTION \n" + e.getMessage());
         }
-
         new SignInFrame(data);
 
     }

@@ -51,6 +51,7 @@ public class RemoveUserTicketFrame extends JFrame {
         ticketsTable.setForeground(Color.white);
         ticketsTable.setBackground(new Color(50, 50, 50));
         ticketsTable.setSelectionBackground(Color.red);
+        ticketsTable.setDefaultEditor(Object.class,null);
         ticketsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ticketsTable.addMouseListener(new MouseListener() {
             @Override
