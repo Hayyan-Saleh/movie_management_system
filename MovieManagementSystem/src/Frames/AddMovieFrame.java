@@ -49,7 +49,7 @@ public class AddMovieFrame extends JFrame implements ActionListener {
         add(movieNameHintLabel);
 
         movieCategoryHintLabel = new JLabel("Select the Movie Category");
-        movieCategoryHintLabel.setBounds(10, 170, 210, 30);
+        movieCategoryHintLabel.setBounds(10, 170, 230, 30);
         movieCategoryHintLabel.setForeground(Color.white);
         movieCategoryHintLabel.setFont(new Font("Serif", Font.BOLD, 18));
         add(movieCategoryHintLabel);

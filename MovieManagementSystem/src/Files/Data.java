@@ -23,12 +23,10 @@ public class Data implements Serializable {
      public  ArrayList<User> appUsers;
      public  Manager appManager;
      public  ArrayList<Movie>appMovies;
-     public  ArrayList<Hall>appHalls;
 
      public Data() {
           appUsers=new ArrayList<>();
           appMovies=new ArrayList<>();
-          appHalls=new ArrayList<>();
      }
 
      public ArrayList<User> getAppUsers() {
@@ -53,20 +51,6 @@ public class Data implements Serializable {
 
      public void setAppMovies(ArrayList<Movie> appMovies) {
           this.appMovies = appMovies;
-     }
-
-     public ArrayList<Hall> getAppHalls() {
-          return appHalls;
-     }
-
-     public void setAppHalls(ArrayList<Hall> appHalls) {
-          this.appHalls = appHalls;
-     }
-
-     public void print(){
-          for(Hall hall:appHalls){
-               System.out.println(hall.toString());
-          }
      }
      public void saveRating(String username, int rating, String comment) {
           for (User user : appUsers) {

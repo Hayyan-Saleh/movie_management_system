@@ -38,6 +38,10 @@ public class Hall implements Serializable {
         return isTimeTaken.get(day);
     }
 
+    public void setIsTimeTaken(Map<Day, Map<Hour, Boolean>> isTimeTaken) {
+        this.isTimeTaken = isTimeTaken;
+    }
+
     public void setTimeTaken(Day day, Hour hour) {
         isTimeTaken.get(day).put(hour, true);
     }

@@ -42,7 +42,7 @@ public class AddDiscountFrame extends JFrame {
         discountDaysComboBox.setBackground(Color.darkGray);
         discountDaysComboBox.setForeground(Color.white);
         discountDaysComboBox.setFont(new Font("Serif", Font.BOLD, 20));
-        discountDaysComboBox.setBounds(10, 40, 150, 30);
+        discountDaysComboBox.setBounds(10, 40, 170, 30);
         discountDaysComboBox.addActionListener((e)->{
             this.discountDay=(Day)discountDaysComboBox.getSelectedItem();
         });
@@ -73,6 +73,11 @@ public class AddDiscountFrame extends JFrame {
         addDiscountButton.setBackground(new Color(0, 190, 150));
         addDiscountButton.setFocusPainted(false);
         addDiscountButton.addActionListener((e)->{
+            try{
+                this.discountAmount=Double.parseDouble(discountAmountTextField.getText());
+            }catch (NumberFormatException ex){
+                JOptionPane.showMessageDialog(this,"Please Enter a Valid Number in Discount Amount !!");
+            }
             if(this.discountDay!=null && this.discountAmount!=0){
                 data.getAppManager().setManagerDiscountDay(this.discountDay);
                 data.getAppManager().setDiscountAmount(this.discountAmount);

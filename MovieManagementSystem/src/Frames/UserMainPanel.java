@@ -20,14 +20,16 @@ public class UserMainPanel extends JPanel implements ActionListener {
     UserFrame userFrame;
     Data data;
     User user;
-    JLabel userNameLabel, userTotalTicketsLabel,discountDetailsLabel;
-    JButton addTicketButton,removeTicketButton,newMovieBookerButton, showStaticsButton,rateMovieButton;
+    JLabel userNameLabel, userTotalTicketsLabel,discountDetailsLabel,announcementLabel,discount2;
+    JButton addTicketButton,removeTicketButton,newMovieBookerButton, showStaticsButton,rateMovieButton,goBackToSignInWindowButton;
 
     DefaultTableModel moviesModel = new DefaultTableModel();
     JTable  moviesTable;
     JScrollPane moviesTableScrollPane;
     Font font =new Font("Arial",Font.ROMAN_BASELINE,24);
+    Font font2 =new Font("Arial",Font.ROMAN_BASELINE,20);
     ImageIcon imageIcon=new ImageIcon("userBackground.png");
+    boolean moviesExists=false;
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -43,9 +45,14 @@ public class UserMainPanel extends JPanel implements ActionListener {
         repaint();
         revalidate();
 
+
+        //setting the enable feature for the buttons
+        setButtonsEnabled();
+
+
         //creating the labels and adding them to panel
-        userNameLabel =new JLabel("User Name : "+user.getUserName());
-        userNameLabel.setBounds(10,20,250,40);
+        userNameLabel =new JLabel("Username : "+user.getUserName());
+        userNameLabel.setBounds(10,20,350,40);
         userNameLabel.setFont(font);
         userNameLabel.setForeground(Color.white);
         add(userNameLabel);
@@ -56,53 +63,82 @@ public class UserMainPanel extends JPanel implements ActionListener {
         userTotalTicketsLabel.setForeground(Color.white);
         add(userTotalTicketsLabel);
 
-        discountDetailsLabel =new JLabel(data.getAppManager().getManagerDiscountDay()==null ? "Discount :No Day Discounts":"Discount :At "+data.getAppManager().getManagerDiscountDay()+" for "+data.getAppManager().getDiscountAmount()+" %");
-        discountDetailsLabel.setBounds(10,100,365,40);
-        discountDetailsLabel.setFont(new Font("Arial",Font.PLAIN,20));
-        discountDetailsLabel.setForeground(Color.white);
+        announcementLabel = new JLabel("Announcements:");
+        announcementLabel.setBounds(10,100,200,40);
+        announcementLabel.setFont(new Font("Arial",Font.ITALIC,24));
+        announcementLabel.setForeground(Color.ORANGE);
+        add(announcementLabel);
+
+        discountDetailsLabel =new JLabel(data.getAppManager().getManagerDiscountDay()==null ? "No Day Discounts":"Day Discount :At "+data.getAppManager().getManagerDiscountDay()+" for "+data.getAppManager().getDiscountAmount()+"%");
+        discountDetailsLabel.setBounds(10,165,350,20);
+        discountDetailsLabel.setFont(new Font("Arial",Font.ROMAN_BASELINE,17));
+        discountDetailsLabel.setForeground(Color.ORANGE);
         add(discountDetailsLabel);
+
+        discount2 = new JLabel("10% Discount When Buying 5 Tickets Or More");
+        discount2.setBounds(10,140,350,20);
+        discount2.setFont(new Font("Arial",Font.ROMAN_BASELINE,16));
+        discount2.setForeground(Color.ORANGE);
+        add(discount2);
+
 
         JLabel newMovieHintLabel=new JLabel("Watch Newest Movie ");
         newMovieHintLabel.setBounds(55,230,300,30);
-        newMovieHintLabel.setFont(new Font("Arial",Font.LAYOUT_LEFT_TO_RIGHT,20));
-        newMovieHintLabel.setForeground(Color.white);
+        newMovieHintLabel.setFont(new Font("Arial",Font.ITALIC,20));
+        newMovieHintLabel.setForeground(Color.orange);
         add(newMovieHintLabel);
 
         JLabel moviesHintLabel=new JLabel(data.getCinema().getCinemaName()+" Cinema Movies ");
-        moviesHintLabel.setBounds(430,20,300,30);
+        moviesHintLabel.setBounds(400,20,350,30);
         moviesHintLabel.setFont(new Font("Arial",Font.LAYOUT_LEFT_TO_RIGHT,20));
         moviesHintLabel.setForeground(Color.white);
         add(moviesHintLabel);
 
+
+
         //creating and adding the buttons to the panel
         addTicketButton =new JButton("Add Ticket");
-        addTicketButton.setBounds(50,150,200,30);
-        addTicketButton.setFont(font);
+        addTicketButton.setBounds(175,190,150,30);
+        addTicketButton.setFont(font2);
         addTicketButton.setFocusPainted(false);
         addTicketButton.setBorder(null);
         addTicketButton.setForeground(Color.white);
-        addTicketButton.setBackground(Color.darkGray);
+        addTicketButton.setBackground(new Color(100, 0, 100));
+        addTicketButton.setBorder(BorderFactory.createLineBorder(Color.yellow));
         addTicketButton.addActionListener(this);
+        addTicketButton.setEnabled(moviesExists);
         add(addTicketButton);
 
         removeTicketButton =new JButton("Remove Ticket");
-        removeTicketButton.setBounds(50,190,200,30);
-        removeTicketButton.setFont(font);
+        removeTicketButton.setBounds(10,190,150,30);
+        removeTicketButton.setFont(font2);
         removeTicketButton.setFocusPainted(false);
         removeTicketButton.setBorder(null);
+        removeTicketButton.setEnabled(moviesExists);
         removeTicketButton.setForeground(Color.white);
-        removeTicketButton.setBackground(Color.darkGray);
+        removeTicketButton.setBackground(new Color(100, 0, 100));
+        removeTicketButton.setBorder(BorderFactory.createLineBorder(Color.yellow));
         removeTicketButton.addActionListener(this);
         add(removeTicketButton);
 
 
-        newMovieBookerButton =new JButton(data.getAppMovies().get(data.getAppMovies().size()-1).getMovieName());
+        newMovieBookerButton =new JButton();
+        String newestMovieString="";
+        if(data.getAppMovies()!=null){
+            if(!data.getAppMovies().isEmpty())
+                newestMovieString = data.getAppMovies().get(data.getAppMovies().size() - 1).getMovieName();
+            else
+                newestMovieString="No Movies In Cinema";
+        }
+        newMovieBookerButton.setText(newestMovieString);
         newMovieBookerButton.setBounds(50,270,200,30);
         newMovieBookerButton.setFont(new Font("Serif",Font.LAYOUT_LEFT_TO_RIGHT,20));
         newMovieBookerButton.setFocusPainted(false);
         newMovieBookerButton.setBorder(null);
+        newMovieBookerButton.setBorder(BorderFactory.createLineBorder(Color.yellow));
+        newMovieBookerButton.setBackground(new Color(150, 50, 50));
         newMovieBookerButton.setForeground(Color.white);
-        newMovieBookerButton.setBackground(new Color(150,50,50));
+        newMovieBookerButton.setEnabled(moviesExists);
         newMovieBookerButton.addActionListener(this);
         add(newMovieBookerButton);
 
@@ -112,7 +148,9 @@ public class UserMainPanel extends JPanel implements ActionListener {
         showStaticsButton.setFocusPainted(false);
         showStaticsButton.setBorder(null);
         showStaticsButton.setForeground(Color.white);
-        showStaticsButton.setBackground(new Color(50,50,50));
+        showStaticsButton.setBackground(new Color(100, 0, 100));
+        showStaticsButton.setBorder(BorderFactory.createLineBorder(Color.yellow));
+        showStaticsButton.setEnabled(moviesExists);
         showStaticsButton.addActionListener(this);
         add(showStaticsButton);
 
@@ -122,9 +160,22 @@ public class UserMainPanel extends JPanel implements ActionListener {
         rateMovieButton.setFocusPainted(false);
         rateMovieButton.setBorder(null);
         rateMovieButton.setForeground(Color.white);
-        rateMovieButton.setBackground(new Color(50, 50, 50));
+        rateMovieButton.setBackground(new Color(100, 0, 100));
+        rateMovieButton.setBorder(BorderFactory.createLineBorder(Color.yellow));
+        rateMovieButton.setEnabled(moviesExists);
         rateMovieButton.addActionListener(this);
         add(rateMovieButton);
+
+        goBackToSignInWindowButton = new JButton("Back To Sign In Window");
+        goBackToSignInWindowButton.setBounds(5,520,200,40);
+        goBackToSignInWindowButton.setFont(new Font("Serif", Font.BOLD, 16));
+        goBackToSignInWindowButton.setFocusPainted(false);
+        goBackToSignInWindowButton.setBorder(null);
+        goBackToSignInWindowButton.setForeground(Color.white);
+        goBackToSignInWindowButton.setBackground(new Color(100, 0, 100));
+        goBackToSignInWindowButton.setBorder(BorderFactory.createLineBorder(Color.yellow));
+        goBackToSignInWindowButton.addActionListener(this);
+        add(goBackToSignInWindowButton);
 
 
         //creating movies Table and adding it to panel
@@ -210,6 +261,7 @@ public class UserMainPanel extends JPanel implements ActionListener {
             while(!Thread.currentThread().isInterrupted())
             userTotalTicketsLabel.setText("User Total Tickets : "+user.getUserTickets().size());
         }).start();
+
 
     }
 
@@ -310,6 +362,23 @@ public class UserMainPanel extends JPanel implements ActionListener {
                     }
                 }
             }).start();
+        }else if (e.getSource() == goBackToSignInWindowButton) {
+            try {
+                ObjectOutputStream applicationDataSaver = new ObjectOutputStream(new FileOutputStream("data.txt"));
+                applicationDataSaver.writeObject(data);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "There is an IOEXCEPTION \n" + ex.getMessage());
+            }
+            new SignInFrame(data);
+            userFrame.dispose();
+
         }
     }
+
+    public void setButtonsEnabled(){
+        if(data.getAppMovies()!=null)
+            if(!data.getAppMovies().isEmpty())
+                moviesExists=true;
+    }
+
 }

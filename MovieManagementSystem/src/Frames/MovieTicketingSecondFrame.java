@@ -29,7 +29,7 @@ public class MovieTicketingSecondFrame extends JFrame implements ActionListener 
     ArrayList<Boolean> totalChairsBooleanArr;
     ArrayList<Integer> takenChairsIndexes;
     ArrayList<JButton> totalChairsButtonArr;
-
+    String discountDetails="";
     public MovieTicketingSecondFrame(Data data, User user, Movie movie, Day day, Hour hour) {
         super("Movie Chairs Selection");
         this.data = data;
@@ -105,7 +105,6 @@ public class MovieTicketingSecondFrame extends JFrame implements ActionListener 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookButton) {
-
             takenChairsIndexes=new ArrayList<>();
             for(JButton button:totalChairsButtonArr){
                 if(button.getIcon()==hoverIcon){
@@ -113,7 +112,7 @@ public class MovieTicketingSecondFrame extends JFrame implements ActionListener 
                 }
             }
             if (takenChairsIndexes.size() != 0) {
-                String discountDetails="";
+
                 double totalDiscount=0;
                 if(takenChairsIndexes.size()>=5){
                     totalDiscount=10;
@@ -127,30 +126,39 @@ public class MovieTicketingSecondFrame extends JFrame implements ActionListener 
                 }
                 if(discountDetails.equals(""))
                     discountDetails="No Discount";
-                    double costBeforeDiscount=movie.getPrice()*takenChairsIndexes.size();
-                    double costAfterDiscount=costBeforeDiscount*(1-totalDiscount/100);
+                double costBeforeDiscount=movie.getPrice()*takenChairsIndexes.size();
+                double costAfterDiscount=costBeforeDiscount*(1-totalDiscount/100);
                 int res = JOptionPane.showConfirmDialog(this,discountDetails.equals("No Discount")? "Are you sure you want to take tickets for these seats ? \n" + takenChairsIndexes+"\nthis will cost you "+costBeforeDiscount+" \nDiscount : No Discount"
                         :"Are you sure you want to take tickets for these seats ? \n" + takenChairsIndexes+"\nthis will cost you "+costBeforeDiscount+" $ before Discount  \nDiscount Details: "+discountDetails+"\nThis Will cost you "+costAfterDiscount+" $ After discount");
                 if (res == JOptionPane.OK_OPTION) {
-                    ArrayList<Ticket> tickets;
-                    if(discountDetails.equals("No Discount")){
-                         tickets=Ticketing.addTicket(this.user, this.movie, this.day, this.hour, takenChairsIndexes,costBeforeDiscount/takenChairsIndexes.size());
-                        data.getAppManager().setManagerIncome(data.getAppManager().getManagerIncome()+costBeforeDiscount);
-                    }else{
-                        tickets=Ticketing.addTicket(this.user, this.movie, this.day, this.hour, takenChairsIndexes,costAfterDiscount/takenChairsIndexes.size());
-                        data.getAppManager().setManagerIncome(data.getAppManager().getManagerIncome()+costAfterDiscount);
-                    }
-                    String resultString = "Success ! these are your tickets : \n";
-                    for (int i = 0; i < tickets.size(); i++) {
-                        resultString += "Ticket " + (i + 1) + " : Movie Name : " + tickets.get(i).getMovie() + " ,Movie Day : " + this.day + " ,Movie Hour : " + this.hour + " ,Movie Hall :" + tickets.get(i).getHall().getName() + " ,Chair Number :" + tickets.get(i).getChairNumber() + ",ticket price :"+ tickets.get(i).getPrice()+" $\n";
-                    }
-                    JOptionPane.showMessageDialog(this, resultString);
-                    this.dispose();
-
-                }
+                    PaymentFrame pf=new PaymentFrame();
+                    this.setEnabled(false);
+                    new Thread(()->{
+                        while (!Thread.currentThread().isInterrupted()){
+                            if(!pf.isVisible()){
+                                ArrayList<Ticket> tickets;
+                                if(discountDetails.equals("No Discount")){
+                                    tickets=Ticketing.addTicket(this.user, this.movie, this.day, this.hour, takenChairsIndexes,costBeforeDiscount/takenChairsIndexes.size());
+                                    data.getAppManager().setManagerIncome(data.getAppManager().getManagerIncome()+costBeforeDiscount);
+                                }else{
+                                    tickets=Ticketing.addTicket(this.user, this.movie, this.day, this.hour, takenChairsIndexes,costAfterDiscount/takenChairsIndexes.size());
+                                    data.getAppManager().setManagerIncome(data.getAppManager().getManagerIncome()+costAfterDiscount);
+                                }
+                                String resultString = "Success ! these are your tickets : \n";
+                                for (int i = 0; i < tickets.size(); i++) {
+                                    resultString += "Ticket " + (i + 1) + " : Movie Name : " + tickets.get(i).getMovie() + " ,Movie Day : " + this.day + " ,Movie Hour : " + this.hour + " ,Movie Hall :" + tickets.get(i).getHall().getName() + " ,Chair Number :" + tickets.get(i).getChairNumber() + ",ticket price :"+ tickets.get(i).getPrice()+" $\n";
+                                }
+                                JOptionPane.showMessageDialog(this, resultString);
+                                this.dispose();
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    }).start();
+                  }
             } else {
                 JOptionPane.showMessageDialog(this, "Please pick a seat(s) in order to get ticket(s) ");
             }
+
 
         }else{
             for(JButton button :totalChairsButtonArr){

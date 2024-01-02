@@ -125,6 +125,7 @@ public class RateMoviesFrame extends JFrame {
                 comment.setEnabled(true);
                 addRating.setFont(new Font("Arial", Font.BOLD, 17));
                 addRating.setText("Add Rating");
+                addRating.setForeground(new Color(208, 48, 20));
                 String MovieRatingsString ="";
                 ratingsArea.setText("No Ratings");
 
@@ -164,10 +165,10 @@ public class RateMoviesFrame extends JFrame {
                 ratingSlider.setValue(0);
                 comment.setText("");
 
-
-
-                String tempRatings=ratingsArea.getText();
-                tempRatings+=Comment;
+                    String tempRatings="";
+                    for(int j=0;j<movie.getMovieRating().size();j++){
+                        tempRatings+=movie.getMovieRating().get(j)+"\n";
+                    }
                 ratingsArea.setText(tempRatings);
 
                     JOptionPane.showMessageDialog(null, "Movie Has Been Rated Successfully", "Plain Message", JOptionPane.PLAIN_MESSAGE);

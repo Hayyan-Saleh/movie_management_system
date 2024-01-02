@@ -1,7 +1,7 @@
 package Frames;
 
-import Domain.Hall;
-import Domain.Movie;
+import Crew.User;
+import Domain.*;
 import Files.Data;
 
 import javax.swing.*;
@@ -14,11 +14,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ManagerFrame extends JFrame implements WindowListener, ActionListener {
     Data data;
     JPanel mainPanel, sidePanel;
-    JButton homeButton, addHallButton, addMovieButton, addDiscountButton,removeDiscountButton,removeAllMoviesRatingsButton,goBackToSignInWindowButton, aboutButton;
+    JButton homeButton, addHallButton, addMovieButton, addDiscountButton,removeDiscountButton,removeAllMoviesRatingsButton,removeAllMoviesButton,goBackToSignInWindowButton, aboutButton;
     Font font = new Font("Serif", Font.BOLD, 18);
 
     public ManagerFrame(Data data) {
@@ -101,12 +104,22 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
         removeAllMoviesRatingsButton.addActionListener(this);
         sidePanel.add(removeAllMoviesRatingsButton);
 
+        removeAllMoviesButton = new JButton("Remove All Movies In Cinema");
+        removeAllMoviesButton.setFocusPainted(false);
+        removeAllMoviesButton.setBorderPainted(false);
+        removeAllMoviesButton.setFont(new Font("Serif", Font.BOLD, 18));
+        removeAllMoviesButton.setForeground(Color.white);
+        removeAllMoviesButton.setBackground(new Color(0, 180, 200));
+        removeAllMoviesButton.setPreferredSize(new Dimension(300, 40));
+        removeAllMoviesButton.addActionListener(this);
+        sidePanel.add(removeAllMoviesButton);
+
         goBackToSignInWindowButton = new JButton("Go Back To Sign in Window");
         goBackToSignInWindowButton.setFocusPainted(false);
         goBackToSignInWindowButton.setBorderPainted(false);
         goBackToSignInWindowButton.setFont(new Font("Serif", Font.BOLD, 16));
         goBackToSignInWindowButton.setForeground(Color.white);
-        goBackToSignInWindowButton.setBackground(new Color(0, 180, 200));
+        goBackToSignInWindowButton.setBackground(new Color(0, 180, 220));
         goBackToSignInWindowButton.setPreferredSize(new Dimension(300, 40));
         goBackToSignInWindowButton.addActionListener(this);
         sidePanel.add(goBackToSignInWindowButton);
@@ -116,7 +129,7 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
         aboutButton.setBorderPainted(false);
         aboutButton.setFont(font);
         aboutButton.setForeground(Color.white);
-        aboutButton.setBackground(new Color(0, 180, 220));
+        aboutButton.setBackground(new Color(0, 180, 240));
         aboutButton.setPreferredSize(new Dimension(300, 40));
         aboutButton.addActionListener(this);
         sidePanel.add(aboutButton);
@@ -177,7 +190,8 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
                     flag = false;
                     break;
                 }
-                totalChairs = JOptionPane.showInputDialog(this, "Please Enter The Hall Total chairs Number :", "Hall total chairs number");
+                try {
+                    totalChairs = JOptionPane.showInputDialog(this, "Please Enter The Hall Total chairs Number :", "Hall total chairs number");
                 if (totalChairs == null) {
                     flag = false;
                     break;
@@ -185,14 +199,16 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
                 if (hallName.equals("") && totalChairs.equals("")) {
                     JOptionPane.showMessageDialog(this, "You must fill all the required inputs !", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            }
+
             if (flag) {
                 Hall hall = new Hall(hallName, Integer.parseInt(totalChairs), new ArrayList<>());
                 if (data.getCinema().getHalls() == null) {
                     data.getCinema().setHalls(new ArrayList<>());
                 }
                 data.getCinema().getHalls().add(hall);
-                JOptionPane.showMessageDialog(this, "Succeeded !\nAdded Hall " + hallName + " to the " + data.getCinema().getCinemaName());
+                JOptionPane.showMessageDialog(this, "Succeeded !\nAdded Hall " + hallName + " to the " + data.getCinema().getCinemaName()+" Cinema");
+            }}catch (NumberFormatException ex){
+                    JOptionPane.showMessageDialog(this,"Please Provide a correct number for Hall seats !");}
             }
         } else if (e.getSource() == addMovieButton) {
             if (data.getCinema().getHalls() == null || data.getCinema().getHalls().size() == 0) {
@@ -232,10 +248,33 @@ public class ManagerFrame extends JFrame implements WindowListener, ActionListen
         } else if (e.getSource() == removeAllMoviesRatingsButton) {
             int res =JOptionPane.showConfirmDialog(this,"Are you sure you want to DELETE All the Movies RATINGS ?");
             if (res == JOptionPane.YES_OPTION) {
-                    for(Movie movie:data.getAppMovies()){
-                        movie.clearMovieRatings();
+                for(Movie movie:data.getAppMovies()){
+                    movie.clearMovieRatings();
+                }
+                JOptionPane.showMessageDialog(this,"Successfully Removed All Ratings ");
+            }
+        } else if (e.getSource() == removeAllMoviesButton) {
+            int res =JOptionPane.showConfirmDialog(this,"Are you sure you want to DELETE All the Movies From Your Cinema ?\nThis Will also reset Your Income And removes All the users Tickets ! ");
+            if (res == JOptionPane.YES_OPTION) {
+                    for(User user:data.getAppUsers())
+                        user.setUserTickets(new ArrayList<>());
+                    data.setAppMovies(new ArrayList<>());
+                    data.getAppManager().setManagerIncome(0);
+                    //the underLine code is to reset the halls available show times
+                    Map<Hour,Boolean> hourBooleanMap;
+                    Map<Day,Map<Hour,Boolean>> isTimeTaken = null;
+                    for(Hall hall:data.getCinema().getHalls()){
+                        hourBooleanMap = new LinkedHashMap<>();
+                        isTimeTaken = new HashMap<>();
+                        for (Day day : Day.values()) {
+                            for (Hour h : Hour.values()) {
+                                hourBooleanMap.put(h, false);
+                            }
+                            isTimeTaken.put(day, hourBooleanMap);
+                            hourBooleanMap = new LinkedHashMap<>();
+                        }hall.setIsTimeTaken(isTimeTaken);
                     }
-                    JOptionPane.showMessageDialog(this,"Successfully Removed All Ratings ");
+                    JOptionPane.showMessageDialog(this,"Successfully Removed All Movies From The Cinema !");
             }
         }else if (e.getSource() == goBackToSignInWindowButton) {
             try {

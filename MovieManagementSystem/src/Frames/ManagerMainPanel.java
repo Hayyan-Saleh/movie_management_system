@@ -30,7 +30,7 @@ public class ManagerMainPanel extends JPanel {
             data.getCinema().setCinemaName(JOptionPane.showInputDialog("Please enter your cinema Name"));
         }
         //initialize the labels
-        cinemaNameLabel = new JLabel(data.getCinema().getCinemaName());
+        cinemaNameLabel = new JLabel(data.getCinema().getCinemaName()+" Cinema");
         cinemaNameLabel.setBounds(550, 10, 450, 40);
         cinemaNameLabel.setFont(new Font("Serif", Font.BOLD, 28));
         cinemaNameLabel.setForeground(Color.yellow);
@@ -175,6 +175,7 @@ public class ManagerMainPanel extends JPanel {
                 totalMoviesLabel.setText(data.getAppMovies() == null ? " Total Movies : 0" : " Total Movies : " + data.getAppMovies().size());
                 totalHallsLabel.setText(data.getCinema().getHalls() == null ? " Total Halls : 0" : " Total Halls : " + data.getCinema().getHalls().size());
                 totalUsersLabel.setText(data.getAppUsers() == null ? " Total Users : 0" : " Total Users : " + data.getAppUsers().size());
+                totalIncomeLabel.setText(" Total Income : " + data.getAppManager().getManagerIncome()+" $ ");
                 discountDetailsLabel.setText(data.getAppManager().getManagerDiscountDay()==null ? " Discount : No Discount" : " Discount : At "+data.getAppManager().getManagerDiscountDay()+" for "+data.getAppManager().getDiscountAmount()+" %");
             }
         }).start();
